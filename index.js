@@ -1,4 +1,5 @@
-"use strict";
+/*jslint node: true */
+'use strict';
 
 var debug = require('debug')('connect-roles');
 var ert = require('ert');
@@ -27,6 +28,7 @@ function reset() {
 
 exports.use = use;
 function use() {
+  /*jshint validthis: true */
   if (arguments.length === 1) {
     use1.apply(this, arguments);
   } else if (arguments.length === 2) {
@@ -81,12 +83,12 @@ function isAuthenticated(req,res,next) {
 exports.setFailureHandler = setFailureHandler;
 function setFailureHandler(fn) {
   failureHandler = fn;
-};
+}
 
 exports.setDefaultUser = setDefaultUser;
 function setDefaultUser(user) {
   defaultUser = user;
-};
+}
 
 
 function tester(req, verb){
@@ -96,7 +98,7 @@ function tester(req, verb){
       var fn = functionList[i];
       var vote = fn(req, action);
       if (typeof vote === 'boolean') {
-        result = vote
+        result = vote;
       }
     }
     if(req.user){
