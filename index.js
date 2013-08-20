@@ -70,13 +70,13 @@ function use3(action, path, fn) {
 
 exports.can = routeTester('can');
 exports.is = routeTester('is');
-exports.isAuthenticated = isAuthenticated;
+/*exports.isAuthenticated = isAuthenticated;
 function isAuthenticated(req,res,next) {
   if(arguments.length === 0){ return isAuthenticated; }
   if (req.user && req.user.isAuthenticated === true){ next(); }
   else if(req.user){ failureHandler(req, res, "isAuthenticated"); }
   else { throw new Error("Request.user was null or undefined, include middleware"); }
-};
+};*/
 
 exports.setFailureHandler = setFailureHandler;
 function setFailureHandler(fn) {
@@ -99,8 +99,13 @@ function tester(req, verb){
         result = vote
       }
     }
-    debug('Check Permission: ' + ((req.user && (req.user.id||req.user.name))||"user") +
-        "." + (verb || 'can') + "('" + action + "') -> " + (result === true));
+    if(req.user){
+      debug('Check Permission: ' + (req.user.id||req.user.name||"user") +
+          "." + (verb || 'can') + "('" + action + "') -> " + (result === true));
+    }
+    else {
+      debug('User not authenticated yet');
+    }
     return (result === true);
   };
 }
@@ -120,13 +125,13 @@ function routeTester(verb) {
 }
 
 function attachHelpers(req, obj) {
-  var oldUser = req.user;
+/*  var oldUser = req.user;
   obj.user = req.user || Object.create(defaultUser);
   if(oldUser){
     obj.user.isAuthenticated = true;
   }else{
     obj.user.isAuthenticated = false;
-  }
+  }*/
   if(obj.user){
     obj.user.is = tester(req,'is');
     obj.user.can = tester(req,'can');
