@@ -14,8 +14,13 @@ function defaultFailureHandler(req, res, action) {
 }
 
 var exports = module.exports = function middleware(req, res, next) {
-  if (res.locals) attachHelpers(req, res.locals);
-  attachHelpers(req, req);
+  if (req.user) {
+    req.user.is = tester(req,'is');
+    req.user.can = tester(req,'can');
+    if (res.locals) {
+      res.locals.user = req.user;
+    }
+  }
   next();
 };
 
@@ -124,18 +129,4 @@ function routeTester(verb) {
       }
     };
   };
-}
-
-function attachHelpers(req, obj) {
-/*  var oldUser = req.user;
-  obj.user = req.user || Object.create(defaultUser);
-  if(oldUser){
-    obj.user.isAuthenticated = true;
-  }else{
-    obj.user.isAuthenticated = false;
-  }*/
-  if(obj.user){
-    obj.user.is = tester(req,'is');
-    obj.user.can = tester(req,'can');
-  }
 }
